@@ -1,17 +1,14 @@
-import { forwardRef } from 'react';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-import { ButtonProps, SizableText, YStack, styled } from 'tamagui';
+import { Button as ButtonBase, styled } from 'tamagui';
 
-const TButton = styled(YStack, {
-  alignItems: 'center',
-  backgroundColor: '#6366F1',
-  borderRadius: 28,
-  hoverStyle: {
-    backgroundColor: '#5a5fcf',
+export const Button = styled(ButtonBase, {
+  theme: 'blue',
+  backgroundColor: '$blue10',
+  borderRadius: '$10',
+  color: 'white',
+  size: '$6',
+  disabledStyle: {
+    backgroundColor: '$blue20',
   },
-  justifyContent: 'center',
-  maxWidth: 500,
-  padding: 16,
   shadowColor: '#000',
   shadowOffset: {
     height: 2,
@@ -19,19 +16,4 @@ const TButton = styled(YStack, {
   },
   shadowOpacity: 0.25,
   shadowRadius: 3.84,
-});
-
-export const ButtonText = styled(SizableText, {
-  color: '#FFFFFF',
-  fontSize: 16,
-  fontWeight: '600',
-  textAlign: 'center',
-});
-
-export const Button = forwardRef<TouchableOpacity, ButtonProps>(({ onPress, title }, ref) => {
-  return (
-    <TButton onPress={onPress}>
-      <ButtonText>{title}</ButtonText>
-    </TButton>
-  );
 });
