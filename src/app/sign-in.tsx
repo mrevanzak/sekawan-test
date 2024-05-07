@@ -1,11 +1,12 @@
 import { isClerkAPIResponseError, useSignIn, useSignUp } from '@clerk/clerk-expo';
+import { PhoneCodeFactor } from '@clerk/types';
 import { useToastController } from '@tamagui/toast';
-import { Stack, useRouter } from 'expo-router';
+import { useRouter } from 'expo-router';
 import { useState } from 'react';
-import { KeyboardAvoidingView, Platform, Keyboard } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { Button, H2, Paragraph, Spacer, XStack, YStack } from 'tamagui';
+import { KeyboardAvoidingView, Platform } from 'react-native';
+import { H2, Paragraph, Spacer, XStack, YStack } from 'tamagui';
 
+import { Button } from '@/components/Button';
 import { PhoneInput } from '@/components/PhoneInput';
 
 export default function SignInScreen() {
@@ -20,8 +21,23 @@ export default function SignInScreen() {
 
   async function onSubmit() {
     try {
-      const signInAttempt = await signIn?.create({
-        identifier: fullPhoneNumber,
+      console.log('fullPhoneNumber', fullPhoneNumber);
+      const { phoneNumberId } = (
+        await signIn?.create({
+          identifier: fullPhoneNumber,
+        })
+      )?.supportedFirstFactors.find((factor) => {
+        return factor.strategy === 'phone_code' && factor.phoneNumberId;
+      }) as PhoneCodeFactor;
+
+      await signIn?.prepareFirstFactor({
+        strategy: 'phone_code',
+        phoneNumberId,
+      });
+
+      router.push({
+        pathname: '/verify/[phone]',
+        params: { phone: fullPhoneNumber, signin: 'true' },
       });
     } catch (err) {
       console.log('error', JSON.stringify(err, null, 2));
@@ -31,7 +47,7 @@ export default function SignInScreen() {
             await signUp?.create({
               phoneNumber: fullPhoneNumber,
             });
-            signUp?.preparePhoneNumberVerification();
+            await signUp?.preparePhoneNumberVerification();
 
             router.push({
               pathname: '/verify/[phone]',
@@ -53,42 +69,32 @@ export default function SignInScreen() {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1 }} onTouchStart={() => Keyboard.dismiss()}>
-      <KeyboardAvoidingView
-        style={{ flex: 1 }}
-        behavior="padding"
-        keyboardVerticalOffset={keyboardVerticalOffset}
-      >
-        <Stack.Screen options={{ headerShown: false }} />
-        <YStack gap="$5">
-          <H2>Let's get started!</H2>
-          <Paragraph color="gray">
-            Enter your phone number. We will send you a confirmation code there
-          </Paragraph>
-          <XStack gap="$3">
-            <PhoneInput value="+62" />
-            <PhoneInput
-              flex={1}
-              placeholder="Phone number"
-              keyboardType="numeric"
-              value={phoneNumber}
-              onChangeText={setPhoneNumber}
-            />
-          </XStack>
-        </YStack>
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior="padding"
+      keyboardVerticalOffset={keyboardVerticalOffset}
+    >
+      <YStack gap="$5">
+        <H2>Let's get started!</H2>
+        <Paragraph color="gray">
+          Enter your phone number. We will send you a confirmation code there
+        </Paragraph>
+        <XStack gap="$3">
+          <PhoneInput value="+62" disabled />
+          <PhoneInput
+            flex={1}
+            placeholder="Phone number"
+            keyboardType="numeric"
+            value={phoneNumber}
+            onChangeText={setPhoneNumber}
+          />
+        </XStack>
+      </YStack>
 
-        <Spacer flex />
-        <Button
-          borderRadius="$10"
-          theme="blue"
-          backgroundColor="$blue10"
-          color="white"
-          size="$5"
-          onPress={() => onSubmit()}
-        >
-          Continue
-        </Button>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+      <Spacer flex />
+      <Button onPress={() => onSubmit()} disabled={!phoneNumber}>
+        Continue
+      </Button>
+    </KeyboardAvoidingView>
   );
 }

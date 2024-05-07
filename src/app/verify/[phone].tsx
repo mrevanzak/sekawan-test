@@ -1,4 +1,5 @@
 import { isClerkAPIResponseError, useSignIn, useSignUp } from '@clerk/clerk-expo';
+import { useToastController } from '@tamagui/toast';
 import { useLocalSearchParams } from 'expo-router';
 import { Fragment, useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Alert } from 'react-native';
@@ -8,13 +9,13 @@ import {
   useBlurOnFulfill,
   useClearByFocusCell,
 } from 'react-native-confirmation-code-field';
-import { H2, Paragraph } from 'tamagui';
-
-import { Container } from '@/components/Container';
+import { H2, Paragraph, YStack } from 'tamagui';
 
 const CELL_COUNT = 6;
 
 const Page = () => {
+  const toast = useToastController();
+
   const { phone, signin } = useLocalSearchParams<{ phone: string; signin: string }>();
   const [code, setCode] = useState('');
   const { signIn } = useSignIn();
@@ -42,6 +43,9 @@ const Page = () => {
         code,
       });
       await setActive!({ session: signUp!.createdSessionId });
+      toast.show('Success', {
+        message: 'You have successfully signed up',
+      });
     } catch (err) {
       console.log('error', JSON.stringify(err, null, 2));
       if (isClerkAPIResponseError(err)) {
@@ -52,11 +56,14 @@ const Page = () => {
 
   const verifySignIn = async () => {
     try {
-      await signIn!.attemptFirstFactor({
+      await signIn?.attemptFirstFactor({
         strategy: 'phone_code',
         code,
       });
-      await setActive!({ session: signIn!.createdSessionId });
+      await setActive!({ session: signIn?.createdSessionId });
+      toast.show('Success', {
+        message: 'You have successfully signed in',
+      });
     } catch (err) {
       console.log('error', JSON.stringify(err, null, 2));
       if (isClerkAPIResponseError(err)) {
@@ -66,7 +73,7 @@ const Page = () => {
   };
 
   return (
-    <Container>
+    <YStack>
       <H2>6-digit code</H2>
       <Paragraph>Code sent to {phone} unless you already have an account</Paragraph>
       <CodeField
@@ -88,11 +95,10 @@ const Page = () => {
             >
               <Text style={styles.cellText}>{symbol || (isFocused ? <Cursor /> : null)}</Text>
             </View>
-            {index === 2 ? <View key={`separator-${index}`} style={styles.separator} /> : null}
           </Fragment>
         )}
       />
-    </Container>
+    </YStack>
   );
 };
 
@@ -118,12 +124,6 @@ const styles = StyleSheet.create({
   },
   focusCell: {
     paddingBottom: 8,
-  },
-  separator: {
-    height: 2,
-    width: 10,
-    backgroundColor: 'gray',
-    alignSelf: 'center',
   },
 });
 export default Page;
