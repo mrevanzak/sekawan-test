@@ -1,20 +1,37 @@
 import { forwardRef } from 'react';
-import { Text, TouchableOpacity, TouchableOpacityProps } from 'react-native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import { ButtonProps, SizableText, YStack, styled } from 'tamagui';
 
-interface ButtonProps extends TouchableOpacityProps {
-  onPress: () => void;
-  title: string;
-}
+const TButton = styled(YStack, {
+  alignItems: 'center',
+  backgroundColor: '#6366F1',
+  borderRadius: 28,
+  hoverStyle: {
+    backgroundColor: '#5a5fcf',
+  },
+  justifyContent: 'center',
+  maxWidth: 500,
+  padding: 16,
+  shadowColor: '#000',
+  shadowOffset: {
+    height: 2,
+    width: 0,
+  },
+  shadowOpacity: 0.25,
+  shadowRadius: 3.84,
+});
+
+export const ButtonText = styled(SizableText, {
+  color: '#FFFFFF',
+  fontSize: 16,
+  fontWeight: '600',
+  textAlign: 'center',
+});
 
 export const Button = forwardRef<TouchableOpacity, ButtonProps>(({ onPress, title }, ref) => {
   return (
-    <TouchableOpacity ref={ref} className={styles.button} onPress={onPress}>
-      <Text className={styles.buttonText}>{title}</Text>
-    </TouchableOpacity>
+    <TButton onPress={onPress}>
+      <ButtonText>{title}</ButtonText>
+    </TButton>
   );
 });
-
-const styles = {
-  button: 'items-center bg-indigo-500 rounded-[28px] shadow-md p-4',
-  buttonText: 'text-white text-lg font-semibold text-center',
-};

@@ -1,21 +1,35 @@
 import '../global.css';
 
-import { ClerkProvider } from '@clerk/clerk-expo';
-import Constants from 'expo-constants';
-import { Stack } from 'expo-router';
+import { useFonts } from 'expo-font';
+import { SplashScreen, Stack } from 'expo-router';
+import { useEffect } from 'react';
 
-import { tokenCache } from '@/utils/cache';
+import Provider from '@/components/Provider';
 
 export default function Layout() {
-  if (!Constants.expoConfig?.extra?.clerkPublishableKey) {
-    throw new Error('Missing Clerk Publishable Key');
-  }
+  const [loaded] = useFonts({
+    Inter: require('@tamagui/font-inter/otf/Inter-Medium.otf'),
+    InterBold: require('@tamagui/font-inter/otf/Inter-Bold.otf'),
+  });
+
+  useEffect(() => {
+    if (loaded) {
+      SplashScreen.hideAsync();
+    }
+  }, [loaded]);
+
+  if (!loaded) return null;
 
   return (
-    <ClerkProvider
-      publishableKey={Constants.expoConfig.extra.clerkPublishableKey}
-      tokenCache={tokenCache}>
-      <Stack />
-    </ClerkProvider>
+    <Provider>
+      <Stack
+        screenOptions={{
+          contentStyle: {
+            padding: 16,
+            backgroundColor: 'white',
+          },
+        }}
+      />
+    </Provider>
   );
 }
