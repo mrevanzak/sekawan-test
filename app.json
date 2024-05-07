@@ -36,6 +36,9 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       }
+    },
+    "extra": {
+      "clerkPublishableKey": "process.env.CLERK_PUBLISHABLE_KEY"
     }
   }
 }

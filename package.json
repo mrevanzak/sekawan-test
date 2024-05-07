@@ -11,12 +11,14 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@clerk/clerk-expo": "^1.0.5",
     "@expo/vector-icons": "^14.0.0",
     "@react-navigation/native": "^6.1.7",
     "expo": "latest",
     "expo-constants": "~15.4.5",
     "expo-linking": "~6.2.2",
     "expo-router": "~3.4.10",
+    "expo-secure-store": "^12.8.1",
     "expo-status-bar": "~1.11.1",
     "expo-system-ui": "~2.9.3",
     "expo-web-browser": "~12.8.2",
