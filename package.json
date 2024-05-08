@@ -8,6 +8,8 @@
     "format": "eslint \"**/*.{js,jsx,ts,tsx}\" --fix && prettier \"**/*.{js,jsx,ts,tsx,json}\" --write",
     "ios": "expo start --ios",
     "start": "expo start",
+    "typecheck": "tsc --noEmit --incremental false",
+    "prebuild": "expo prebuild",
     "web": "expo start --web",
     "app-release": "np --no-publish --no-cleanup --no-release-draft --no-tests"
   },
