@@ -3,7 +3,7 @@ import type { ExpoConfig } from '@expo/config';
 const defineConfig = (): ExpoConfig => ({
   name: 'sekawan-test',
   slug: 'sekawan-test',
-  version: '1.0.0',
+  version: process.env.VERSION?.toString(),
 
   scheme: 'sekawan-test',
   web: {
@@ -41,8 +41,14 @@ const defineConfig = (): ExpoConfig => ({
     },
   },
   extra: {
+    eas: {
+      projectId: '93407f5e-a9e7-4450-9fde-62a0c7db505d',
+    },
     clerkPublishableKey: process.env.CLERK_PUBLISHABLE_KEY,
   },
 });
 
 export default defineConfig;
+
+//merge string without space
+''.replace(/\s/g, '');

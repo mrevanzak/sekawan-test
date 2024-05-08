@@ -8,7 +8,8 @@
     "format": "eslint \"**/*.{js,jsx,ts,tsx}\" --fix && prettier \"**/*.{js,jsx,ts,tsx,json}\" --write",
     "ios": "expo start --ios",
     "start": "expo start",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "app-release": "np --no-publish --no-cleanup --no-release-draft --no-tests"
   },
   "dependencies": {
     "@clerk/clerk-expo": "^1.0.5",
@@ -28,6 +29,7 @@
     "burnt": "^0.12.2",
     "expo": "latest",
     "expo-constants": "~15.4.5",
+    "expo-dev-client": "~3.3.11",
     "expo-font": "~11.10.2",
     "expo-linear-gradient": "~12.7.2",
     "expo-linking": "~6.2.2",
@@ -51,16 +53,17 @@
     "zod": "^3.23.7"
   },
   "devDependencies": {
-    "ajv": "^8.12.0",
     "@babel/core": "^7.20.0",
     "@types/react": "~18.2.14",
     "@typescript-eslint/eslint-plugin": "^7.7.0",
     "@typescript-eslint/parser": "^7.7.0",
+    "ajv": "^8.12.0",
     "eslint": "^8.57.0",
     "eslint-config-universe": "^12.0.1",
+    "np": "^10.0.5",
     "prettier": "^3.2.5",
-    "tailwindcss": "^3.4.0",
     "prettier-plugin-tailwindcss": "^0.5.11",
+    "tailwindcss": "^3.4.0",
     "typescript": "^5.4.5"
   },
   "eslintConfig": {
