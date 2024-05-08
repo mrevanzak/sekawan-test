@@ -31,8 +31,10 @@ const defineConfig = (): ExpoConfig => ({
   assetBundlePatterns: ['**/*'],
   ios: {
     supportsTablet: true,
+    bundleIdentifier: 'com.mrevanzak.sekawantest',
   },
   android: {
+    package: 'com.mrevanzak.sekawantest',
     adaptiveIcon: {
       foregroundImage: './assets/adaptive-icon.png',
       backgroundColor: '#ffffff',

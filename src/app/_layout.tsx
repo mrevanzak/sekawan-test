@@ -31,11 +31,12 @@ export default function Layout() {
         <SignedOut>
           <Stack
             screenOptions={{
-              headerLeft: () => (
-                <TouchableOpacity onPress={router.back}>
-                  <Ionicons name="arrow-back" size={34} />
-                </TouchableOpacity>
-              ),
+              headerLeft: (props) =>
+                props.canGoBack && (
+                  <TouchableOpacity onPress={router.back}>
+                    <Ionicons name="arrow-back" size={34} />
+                  </TouchableOpacity>
+                ),
               title: '',
               headerShadowVisible: false,
               contentStyle: {

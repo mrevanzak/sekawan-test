@@ -1,57 +1,73 @@
 import { isClerkAPIResponseError, useSignIn, useSignUp } from '@clerk/clerk-expo';
-import { PhoneCodeFactor } from '@clerk/types';
+import { EmailCodeFactor } from '@clerk/types';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useToastController } from '@tamagui/toast';
+import { LmInputRhf } from '@tamagui-extras/form';
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { KeyboardAvoidingView, Platform } from 'react-native';
-import { H2, Paragraph, Spacer, XStack, YStack } from 'tamagui';
+import { Form, H2, Paragraph, Spacer, YStack } from 'tamagui';
+import { z } from 'zod';
 
 import { Button } from '@/components/Button';
-import { PhoneInput } from '@/components/PhoneInput';
+
+const schema = z.object({
+  email: z.string().email(),
+});
 
 export default function SignInScreen() {
   const toast = useToastController();
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const fullPhoneNumber = `+62${phoneNumber}`;
 
   const keyboardVerticalOffset = Platform.OS === 'ios' ? 40 : 0;
   const router = useRouter();
   const { signIn } = useSignIn();
   const { signUp } = useSignUp();
 
-  async function onSubmit() {
+  const methods = useForm<z.infer<typeof schema>>({
+    mode: 'onTouched',
+    resolver: zodResolver(schema),
+  });
+  const { control, handleSubmit, formState } = methods;
+
+  const onSubmit = handleSubmit(async ({ email }) => {
     try {
-      console.log('fullPhoneNumber', fullPhoneNumber);
-      const { phoneNumberId } = (
+      const { emailAddressId } = (
         await signIn?.create({
-          identifier: fullPhoneNumber,
+          identifier: email,
         })
       )?.supportedFirstFactors.find((factor) => {
-        return factor.strategy === 'phone_code' && factor.phoneNumberId;
-      }) as PhoneCodeFactor;
+        return factor.strategy === 'email_code' && factor.emailAddressId;
+      }) as EmailCodeFactor;
 
       await signIn?.prepareFirstFactor({
-        strategy: 'phone_code',
-        phoneNumberId,
+        strategy: 'email_code',
+        emailAddressId,
       });
 
       router.push({
-        pathname: '/verify/[phone]',
-        params: { phone: fullPhoneNumber, signin: 'true' },
+        pathname: '/verify/[email]',
+        params: { email, signin: 'true' },
       });
     } catch (err) {
       console.log('error', JSON.stringify(err, null, 2));
       if (isClerkAPIResponseError(err)) {
+        if (err.errors[0].code !== 'form_identifier_not_found') {
+          toast.show('Error', {
+            message: err.errors[0].message,
+            burntOptions: { preset: 'error' },
+          });
+        }
+
         if (err.errors[0].code === 'form_identifier_not_found') {
           try {
             await signUp?.create({
-              phoneNumber: fullPhoneNumber,
+              emailAddress: email,
             });
-            await signUp?.preparePhoneNumberVerification();
+            await signUp?.prepareEmailAddressVerification();
 
             router.push({
-              pathname: '/verify/[phone]',
-              params: { phone: fullPhoneNumber },
+              pathname: '/verify/[email]',
+              params: { email },
             });
           } catch (err) {
             console.log('error', JSON.stringify(err, null, 2));
@@ -59,6 +75,7 @@ export default function SignInScreen() {
               if (err.errors[0].code === 'form_identifier_not_found') {
                 toast.show('Error', {
                   message: err.errors[0].message,
+                  burntOptions: { preset: 'error' },
                 });
               }
             }
@@ -66,7 +83,7 @@ export default function SignInScreen() {
         }
       }
     }
-  }
+  });
 
   return (
     <KeyboardAvoidingView
@@ -77,24 +94,25 @@ export default function SignInScreen() {
       <YStack gap="$5">
         <H2>Let's get started!</H2>
         <Paragraph color="gray">
-          Enter your phone number. We will send you a confirmation code there
+          Enter your email. We will send you a confirmation code there
         </Paragraph>
-        <XStack gap="$3">
-          <PhoneInput value="+62" disabled />
-          <PhoneInput
-            flex={1}
-            placeholder="Phone number"
-            keyboardType="numeric"
-            value={phoneNumber}
-            onChangeText={setPhoneNumber}
-          />
-        </XStack>
       </YStack>
 
-      <Spacer flex />
-      <Button onPress={() => onSubmit()} disabled={!phoneNumber}>
-        Continue
-      </Button>
+      <Form onSubmit={onSubmit} flex={1} paddingVertical="$5">
+        <LmInputRhf
+          name="email"
+          control={control}
+          label="Email"
+          placeholder="Enter your email"
+          inlineImageLeft="email"
+        />
+        <Spacer flex />
+        <Form.Trigger asChild>
+          <Button disabled={!formState.isValid} loading={formState.isSubmitting}>
+            Continue
+          </Button>
+        </Form.Trigger>
+      </Form>
     </KeyboardAvoidingView>
   );
 }

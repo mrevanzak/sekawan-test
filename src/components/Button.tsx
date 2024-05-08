@@ -1,6 +1,7 @@
-import { Button as ButtonBase, styled } from 'tamagui';
+import { LmButton } from '@tamagui-extras/core';
+import { styled } from 'tamagui';
 
-export const Button = styled(ButtonBase, {
+export const Button = styled(LmButton, {
   theme: 'blue',
   backgroundColor: '$blue10',
   borderRadius: '$10',

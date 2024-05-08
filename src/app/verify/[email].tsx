@@ -1,6 +1,6 @@
 import { isClerkAPIResponseError, useSignIn, useSignUp } from '@clerk/clerk-expo';
 import { useToastController } from '@tamagui/toast';
-import { useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Fragment, useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Alert } from 'react-native';
 import {
@@ -9,14 +9,16 @@ import {
   useBlurOnFulfill,
   useClearByFocusCell,
 } from 'react-native-confirmation-code-field';
-import { H2, Paragraph, YStack } from 'tamagui';
+import { H2, Paragraph, YStack, useTheme } from 'tamagui';
 
 const CELL_COUNT = 6;
 
 const Page = () => {
+  const router = useRouter();
   const toast = useToastController();
+  const theme = useTheme();
 
-  const { phone, signin } = useLocalSearchParams<{ phone: string; signin: string }>();
+  const { email, signin } = useLocalSearchParams<{ email: string; signin: string }>();
   const [code, setCode] = useState('');
   const { signIn } = useSignIn();
   const { signUp, setActive } = useSignUp();
@@ -39,13 +41,14 @@ const Page = () => {
 
   const verifyCode = async () => {
     try {
-      await signUp!.attemptPhoneNumberVerification({
+      await signUp?.attemptEmailAddressVerification({
         code,
       });
-      await setActive!({ session: signUp!.createdSessionId });
+      await setActive!({ session: signUp?.createdSessionId });
       toast.show('Success', {
         message: 'You have successfully signed up',
       });
+      router.push('/(protected)');
     } catch (err) {
       console.log('error', JSON.stringify(err, null, 2));
       if (isClerkAPIResponseError(err)) {
@@ -57,13 +60,14 @@ const Page = () => {
   const verifySignIn = async () => {
     try {
       await signIn?.attemptFirstFactor({
-        strategy: 'phone_code',
+        strategy: 'email_code',
         code,
       });
       await setActive!({ session: signIn?.createdSessionId });
       toast.show('Success', {
         message: 'You have successfully signed in',
       });
+      router.push('/(protected)');
     } catch (err) {
       console.log('error', JSON.stringify(err, null, 2));
       if (isClerkAPIResponseError(err)) {
@@ -75,7 +79,7 @@ const Page = () => {
   return (
     <YStack>
       <H2>6-digit code</H2>
-      <Paragraph>Code sent to {phone} unless you already have an account</Paragraph>
+      <Paragraph>Code sent to {email} unless you already have an account</Paragraph>
       <CodeField
         ref={ref}
         {...props}
@@ -91,7 +95,11 @@ const Page = () => {
               // Make sure that you pass onLayout={getCellOnLayoutHandler(index)} prop to root component of "Cell"
               onLayout={getCellOnLayoutHandler(index)}
               key={index}
-              style={[styles.cellRoot, isFocused && styles.focusCell]}
+              style={[
+                styles.cellRoot,
+                isFocused && styles.focusCell,
+                { backgroundColor: theme.gray3.val },
+              ]}
             >
               <Text style={styles.cellText}>{symbol || (isFocused ? <Cursor /> : null)}</Text>
             </View>
@@ -110,11 +118,10 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   cellRoot: {
-    width: 45,
+    width: 48,
     height: 60,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'gray',
     borderRadius: 8,
   },
   cellText: {
