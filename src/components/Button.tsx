@@ -8,7 +8,7 @@ export const Button = styled(LmButton, {
   color: 'white',
   size: '$6',
   disabledStyle: {
-    backgroundColor: '$blue20',
+    backgroundColor: '$blue7',
   },
   shadowColor: '#000',
   shadowOffset: {
