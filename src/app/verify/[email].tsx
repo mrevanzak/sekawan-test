@@ -1,5 +1,4 @@
 import { isClerkAPIResponseError, useSignIn, useSignUp } from '@clerk/clerk-expo';
-import { useToastController } from '@tamagui/toast';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Fragment, useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Alert } from 'react-native';
@@ -11,11 +10,13 @@ import {
 } from 'react-native-confirmation-code-field';
 import { H2, Paragraph, YStack, useTheme } from 'tamagui';
 
+import { useToast } from '@/components/Toast';
+
 const CELL_COUNT = 6;
 
 const Page = () => {
   const router = useRouter();
-  const toast = useToastController();
+  const toast = useToast();
   const theme = useTheme();
 
   const { email, signin } = useLocalSearchParams<{ email: string; signin: string }>();

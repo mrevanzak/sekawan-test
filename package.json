@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "main": "expo-router/entry",
   "scripts": {
-    "android": "expo start --android",
+    "android": "expo run:android",
     "lint": "eslint \"**/*.{js,jsx,ts,tsx}\" && prettier -c \"**/*.{js,jsx,ts,tsx,json}\"",
     "format": "eslint \"**/*.{js,jsx,ts,tsx}\" --fix && prettier \"**/*.{js,jsx,ts,tsx,json}\" --write",
-    "ios": "expo start --ios",
+    "ios": "expo run:ios",
     "start": "expo start",
     "typecheck": "tsc --noEmit --incremental false",
     "prebuild": "expo prebuild",
@@ -14,6 +14,7 @@
     "app-release": "np --no-publish --no-cleanup --no-release-draft --no-tests"
   },
   "dependencies": {
+    "@baronha/ting": "1.1.0",
     "@clerk/clerk-expo": "^1.0.5",
     "@expo/vector-icons": "^14.0.0",
     "@hookform/resolvers": "^3.3.4",
@@ -51,6 +52,7 @@
     "react-native-safe-area-context": "^4.8.2",
     "react-native-screens": "~3.29.0",
     "react-native-web": "~0.19.10",
+    "react-native-webview": "13.6.4",
     "tamagui": "1.97.1",
     "zod": "^3.23.7"
   },

@@ -1,7 +1,6 @@
 import { isClerkAPIResponseError, useSignIn, useSignUp } from '@clerk/clerk-expo';
 import { EmailCodeFactor } from '@clerk/types';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useToastController } from '@tamagui/toast';
 import { LmInputRhf } from '@tamagui-extras/form';
 import { useRouter } from 'expo-router';
 import { useForm } from 'react-hook-form';
@@ -10,13 +9,14 @@ import { Form, H2, Paragraph, Spacer, YStack } from 'tamagui';
 import { z } from 'zod';
 
 import { Button } from '@/components/Button';
+import { useToast } from '@/components/Toast';
 
 const schema = z.object({
   email: z.string().email(),
 });
 
 export default function SignInScreen() {
-  const toast = useToastController();
+  const toast = useToast();
 
   const keyboardVerticalOffset = Platform.OS === 'ios' ? 40 : 0;
   const router = useRouter();

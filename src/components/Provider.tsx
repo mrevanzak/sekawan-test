@@ -1,6 +1,6 @@
 import { ClerkProvider } from '@clerk/clerk-expo';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { ToastProvider, ToastViewport, useToastController } from '@tamagui/toast';
+import { ToastProvider, ToastViewport } from '@tamagui/toast';
 import {
   MutationCache,
   QueryCache,
@@ -15,12 +15,11 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { TamaguiProvider } from 'tamagui';
 import config from 'tamagui.config';
 
-import { Toast } from '@/components/Toast';
+import { Toast, useToast } from '@/components/Toast';
 import { tokenCache } from '@/lib/cache';
-import { isExpo } from '@/lib/utils';
 
 export default function Provider({ children }: { children: ReactNode }) {
-  const toast = useToastController();
+  const toast = useToast();
   const colorScheme = useColorScheme();
   const { left, top, right } = useSafeAreaInsets();
 
@@ -70,22 +69,13 @@ export default function Provider({ children }: { children: ReactNode }) {
           disableInjectCSS
           defaultTheme={colorScheme === 'light' ? 'light' : 'dark'}
         >
-          <ToastProvider
-            burntOptions={{ from: 'top' }}
-            native={!isExpo && 'ios'}
-            swipeDirection="up"
-          >
+          <ToastProvider burntOptions={{ from: 'top' }} swipeDirection="up">
             <ThemeProvider value={colorScheme === 'light' ? DefaultTheme : DarkTheme}>
               {children}
             </ThemeProvider>
 
             <Toast />
-            <ToastViewport
-              flexDirection="column-reverse"
-              top={top + 64}
-              left={left}
-              right={right}
-            />
+            <ToastViewport flexDirection="column-reverse" top={top} left={left} right={right} />
           </ToastProvider>
         </TamaguiProvider>
       </QueryClientProvider>

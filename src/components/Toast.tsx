@@ -1,4 +1,7 @@
-import { Toast as TamaguiToast, useToastState } from '@tamagui/toast';
+import { Toast as TamaguiToast, useToastController, useToastState } from '@tamagui/toast';
+import { CreateNativeToastOptions } from '@tamagui/toast/types/types';
+
+import { isExpo } from '@/lib/utils';
 
 export const Toast = () => {
   const currentToast = useToastState();
@@ -26,4 +29,20 @@ export const Toast = () => {
       )}
     </TamaguiToast>
   );
+};
+
+export const useToast = (): {
+  show: (title: string, options?: CreateNativeToastOptions) => void;
+} => {
+  const toast = useToastController();
+
+  return {
+    show: (title, options) =>
+      isExpo
+        ? toast.show(title, options)
+        : require('@baronha/ting').toast({
+            title,
+            message: options?.message,
+          }),
+  };
 };
