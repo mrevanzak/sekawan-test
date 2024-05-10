@@ -1,11 +1,10 @@
 import 'global.css';
 
 import { useAuth } from '@clerk/clerk-expo';
-import { Ionicons } from '@expo/vector-icons';
 import { useFonts } from 'expo-font';
 import { SplashScreen, Stack, useRouter } from 'expo-router';
 import { useEffect } from 'react';
-import { Keyboard, TouchableOpacity } from 'react-native';
+import { Keyboard } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Spinner } from 'tamagui';
 
