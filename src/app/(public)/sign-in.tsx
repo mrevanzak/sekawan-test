@@ -106,6 +106,8 @@ export default function SignInScreen() {
           placeholder="Enter your email"
           inlineImageLeft="email"
           autoFocus
+          returnKeyType="next"
+          onSubmitEditing={onSubmit}
         />
         <Spacer flex />
         <Form.Trigger asChild>
