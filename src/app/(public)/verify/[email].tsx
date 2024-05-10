@@ -1,5 +1,5 @@
 import { isClerkAPIResponseError, useSignIn, useSignUp } from '@clerk/clerk-expo';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useLocalSearchParams } from 'expo-router';
 import { Fragment, useEffect, useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import {
@@ -15,7 +15,6 @@ import { useToast } from '@/components/Toast';
 const CELL_COUNT = 6;
 
 const Page = () => {
-  const router = useRouter();
   const toast = useToast();
   const theme = useTheme();
 
@@ -84,6 +83,11 @@ const Page = () => {
       <H2>6-digit code</H2>
       <Paragraph>Code sent to {email} unless you already have an account</Paragraph>
       <CodeField
+        RootProps={{
+          onLayout: () => {
+            ref?.current?.focus();
+          },
+        }}
         ref={ref}
         {...props}
         value={code}

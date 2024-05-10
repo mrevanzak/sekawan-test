@@ -18,7 +18,7 @@ const schema = z.object({
 export default function SignInScreen() {
   const toast = useToast();
 
-  const keyboardVerticalOffset = Platform.OS === 'ios' ? 40 : 0;
+  const keyboardVerticalOffset = Platform.OS === 'ios' ? 96 : 0;
   const router = useRouter();
   const { signIn } = useSignIn();
   const { signUp } = useSignUp();
@@ -45,7 +45,7 @@ export default function SignInScreen() {
       });
 
       router.push({
-        pathname: '/verify/[email]',
+        pathname: '/(public)/verify/[email]',
         params: { email, signin: 'true' },
       });
     } catch (err) {
@@ -66,7 +66,7 @@ export default function SignInScreen() {
             await signUp?.prepareEmailAddressVerification();
 
             router.push({
-              pathname: '/verify/[email]',
+              pathname: '/(public)/verify/[email]',
               params: { email },
             });
           } catch (err) {
@@ -105,6 +105,7 @@ export default function SignInScreen() {
           label="Email"
           placeholder="Enter your email"
           inlineImageLeft="email"
+          autoFocus
         />
         <Spacer flex />
         <Form.Trigger asChild>
