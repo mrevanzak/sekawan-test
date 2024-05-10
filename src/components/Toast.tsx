@@ -35,14 +35,16 @@ export const useToast = (): {
   show: (title: string, options?: CreateNativeToastOptions) => void;
 } => {
   const toast = useToastController();
+  const ting: typeof import('@baronha/ting').toast = require('@baronha/ting').toast;
 
   return {
     show: (title, options) =>
       isExpo
         ? toast.show(title, options)
-        : require('@baronha/ting').toast({
+        : ting({
             title,
             message: options?.message,
+            preset: title === 'Error' ? 'error' : 'done',
           }),
   };
 };
