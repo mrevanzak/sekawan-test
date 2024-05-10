@@ -43,7 +43,6 @@ function Layout() {
       <Stack
         screenOptions={{
           headerShown: false,
-          animation: 'none',
         }}
         initialRouteName="(public)"
       />

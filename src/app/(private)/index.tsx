@@ -1,24 +1,9 @@
-import { toast } from '@baronha/ting';
-import { useAuth } from '@clerk/clerk-expo';
+import { View, Text } from 'tamagui';
 
-import { Button } from '@/components/Button';
-
-export default function ProtectedLayout() {
-  const { signOut, isSignedIn } = useAuth();
-
+export default function SignInScreen() {
   return (
-    (isSignedIn && (
-      <Button
-        onPress={() => {
-          signOut();
-          toast({
-            title: 'Signed Out',
-          });
-        }}
-      >
-        Sign Out
-      </Button>
-    )) ||
-    null
+    <View>
+      <Text>Sign in</Text>
+    </View>
   );
 }
