@@ -46,7 +46,7 @@ const Page = () => {
       });
       await setActive!({ session: signUp?.createdSessionId });
       toast.show('Success', {
-        message: 'You have successfully signed up',
+        message: 'Sign up successful!',
       });
     } catch (err) {
       console.log('error', JSON.stringify(err, null, 2));
@@ -66,7 +66,7 @@ const Page = () => {
       });
       await setActive!({ session: signIn?.createdSessionId });
       toast.show('Success', {
-        message: 'You have successfully signed in',
+        message: 'Sign in successful!',
       });
     } catch (err) {
       console.log('error', JSON.stringify(err, null, 2));
