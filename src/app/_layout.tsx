@@ -1,21 +1,25 @@
 import 'global.css';
 
-import { SignedIn, SignedOut } from '@clerk/clerk-expo';
+import { useAuth } from '@clerk/clerk-expo';
 import { Ionicons } from '@expo/vector-icons';
 import { useFonts } from 'expo-font';
-import { Slot, SplashScreen, Stack, useRouter } from 'expo-router';
+import { SplashScreen, Stack, useRouter } from 'expo-router';
 import { useEffect } from 'react';
 import { Keyboard, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { Spinner } from 'tamagui';
 
 import Provider from '@/components/Provider';
 
-export default function Layout() {
+function Layout() {
   const router = useRouter();
   const [loaded] = useFonts({
     Inter: require('@tamagui/font-inter/otf/Inter-Medium.otf'),
     InterBold: require('@tamagui/font-inter/otf/Inter-Bold.otf'),
   });
+
+  const { isSignedIn, isLoaded } = useAuth();
+  console.log('isSignedIn', isSignedIn);
 
   useEffect(() => {
     if (loaded) {
@@ -23,33 +27,35 @@ export default function Layout() {
     }
   }, [loaded]);
 
-  if (!loaded) return null;
+  useEffect(() => {
+    if (!isLoaded) return;
+
+    if (isSignedIn) {
+      router.replace('/(private)');
+    } else {
+      router.replace('/(public)');
+    }
+  }, [isSignedIn]);
+
+  if (!loaded || !isLoaded) return <Spinner flex={1} justifyContent="center" size="large" />;
 
   return (
+    <SafeAreaView style={{ flex: 1 }} onTouchStart={() => Keyboard.dismiss()}>
+      <Stack
+        screenOptions={{
+          headerShown: false,
+          animation: 'none',
+        }}
+        initialRouteName="(public)"
+      />
+    </SafeAreaView>
+  );
+}
+
+export default function InitialLayout() {
+  return (
     <Provider>
-      <SafeAreaView style={{ flex: 1 }} onTouchStart={() => Keyboard.dismiss()}>
-        <SignedOut>
-          <Stack
-            screenOptions={{
-              headerLeft: (props) =>
-                props.canGoBack && (
-                  <TouchableOpacity onPress={router.back}>
-                    <Ionicons name="arrow-back" size={34} />
-                  </TouchableOpacity>
-                ),
-              title: '',
-              headerShadowVisible: false,
-              contentStyle: {
-                padding: 16,
-                backgroundColor: 'white',
-              },
-            }}
-          />
-        </SignedOut>
-        <SignedIn>
-          <Slot />
-        </SignedIn>
-      </SafeAreaView>
+      <Layout />
     </Provider>
   );
 }

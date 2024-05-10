@@ -1,7 +1,7 @@
 import { isClerkAPIResponseError, useSignIn, useSignUp } from '@clerk/clerk-expo';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Fragment, useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Alert } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import {
   CodeField,
   Cursor,
@@ -49,11 +49,12 @@ const Page = () => {
       toast.show('Success', {
         message: 'You have successfully signed up',
       });
-      router.push('/(protected)');
     } catch (err) {
       console.log('error', JSON.stringify(err, null, 2));
       if (isClerkAPIResponseError(err)) {
-        Alert.alert('Error', err.errors[0].message);
+        toast.show('Error', {
+          message: err.errors[0].message,
+        });
       }
     }
   };
@@ -68,11 +69,12 @@ const Page = () => {
       toast.show('Success', {
         message: 'You have successfully signed in',
       });
-      router.push('/(protected)');
     } catch (err) {
       console.log('error', JSON.stringify(err, null, 2));
       if (isClerkAPIResponseError(err)) {
-        Alert.alert('Error', err.errors[0].message);
+        toast.show('Error', {
+          message: err.errors[0].message,
+        });
       }
     }
   };
